@@ -1,1 +1,61 @@
 # Screenshot
+
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class ScreenshotUtils {
+
+    public static void captureScreenshot(WebDriver driver, String folderPath, String screenshotName) {
+        try {
+            // Capture screenshot
+            File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+
+            // Create the destination folder path with unique timestamp
+            Path destinationFolder = createDestinationFolder(folderPath);
+
+            // Generate unique file name with timestamp
+            String fileName = generateFileName(screenshotName);
+
+            // Set the file path
+            Path filePath = destinationFolder.resolve("screenshot").resolve(fileName);
+
+            // Copy the screenshot file to the destination folder
+            Files.copy(screenshot.toPath(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            System.out.println("Screenshot captured: " + filePath.toString());
+        } catch (IOException e) {
+            System.out.println("Failed to capture screenshot: " + e.getMessage());
+        }
+    }
+
+    private static Path createDestinationFolder(String folderPath) throws IOException {
+        // Create the folder path with unique timestamp
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
+        String timestamp = now.format(formatter);
+
+        Path destinationFolder = Path.of(folderPath, timestamp, "screenshot");
+        if (!Files.exists(destinationFolder)) {
+            Files.createDirectories(destinationFolder);
+        }
+        return destinationFolder.getParent();
+    }
+
+    private static String generateFileName(String screenshotName) {
+        // Generate a unique file name based on current date and time
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
+        String timestamp = now.format(formatter);
+        String extension = ".png";
+        return screenshotName + "_" + timestamp + extension;
+    }
+}
