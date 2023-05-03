@@ -29,7 +29,7 @@ public class ScreenshotUtils {
             Path filePath = destinationFolder.resolve("screenshot").resolve(fileName);
 
             // Copy the screenshot file to the destination folder
-            Files.copy(screenshot.toPath(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(screenshot.toPath(), filePath.toAbsolutePath(), StandardCopyOption.REPLACE_EXISTING);
 
             System.out.println("Screenshot captured: " + filePath.toString());
         } catch (IOException e) {
@@ -43,7 +43,7 @@ public class ScreenshotUtils {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
         String timestamp = now.format(formatter);
 
-        Path destinationFolder = Path.of(folderPath, timestamp, "screenshot");
+        Path destinationFolder = Paths.get(folderPath, timestamp, "screenshot");
         if (!Files.exists(destinationFolder)) {
             Files.createDirectories(destinationFolder);
         }
