@@ -33,7 +33,7 @@ public class ScreenshotUtils {
             Path filePath = destinationFolder.resolve("screenshot").resolve(fileName);
 
             // Copy the screenshot file to the destination folder
-            Files.copy(screenshot.toPath(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(screenshot.toPath(), filePath.toAbsolutePath(), StandardCopyOption.REPLACE_EXISTING);
 
             System.out.println("Screenshot captured: " + filePath.toString());
         } catch (IOException e) {
@@ -55,7 +55,7 @@ public class ScreenshotUtils {
             extentReports.setSystemInfo("User", "John Doe");
             extentReports.flush();
 
-            Files.copy(extentReports.getFilePath(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(new File(extentReports.getFilePath()).toPath(), filePath.toAbsolutePath(), StandardCopyOption.REPLACE_EXISTING);
 
             System.out.println("Extent HTML report saved: " + filePath.toString());
         } catch (IOException e) {
@@ -69,7 +69,7 @@ public class ScreenshotUtils {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
         String timestamp = now.format(formatter);
 
-        Path destinationFolder = Path.of(folderPath, timestamp);
+        Path destinationFolder = new File(folderPath, timestamp).toPath();
         if (!Files.exists(destinationFolder)) {
             Files.createDirectories(destinationFolder);
         }
