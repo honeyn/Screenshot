@@ -50,12 +50,11 @@ public class ScreenshotUtils {
             Path filePath = destinationFolder.resolve("extent-report.html");
 
             // Save the Extent HTML report
-            extentReports.setReportUsesManualConfiguration(true);
+            ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter(filePath.toFile());
+            extentReports.attachReporter(htmlReporter);
             extentReports.setSystemInfo("Environment", "Production");
             extentReports.setSystemInfo("User", "John Doe");
             extentReports.flush();
-
-            Files.copy(new File(extentReports.getFilePath()).toPath(), filePath.toAbsolutePath(), StandardCopyOption.REPLACE_EXISTING);
 
             System.out.println("Extent HTML report saved: " + filePath.toString());
         } catch (IOException e) {
