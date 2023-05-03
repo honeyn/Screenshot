@@ -5,7 +5,6 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 
 import com.aventstack.extentreports.ExtentReports;
-import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 
 import java.io.File;
@@ -30,7 +29,7 @@ public class ScreenshotUtils {
             String fileName = generateFileName(screenshotName);
 
             // Set the file path
-            Path filePath = destinationFolder.resolve("screenshot").resolve(fileName);
+            Path filePath = destinationFolder.resolve("Screenshots").resolve(fileName);
 
             // Copy the screenshot file to the destination folder
             Files.copy(screenshot.toPath(), filePath.toAbsolutePath(), StandardCopyOption.REPLACE_EXISTING);
@@ -46,8 +45,11 @@ public class ScreenshotUtils {
             // Create the destination folder path with unique timestamp
             Path destinationFolder = createDestinationFolder(folderPath);
 
+            // Generate unique file name with timestamp
+            String fileName = generateFileName("extent-html");
+
             // Set the file path for the HTML report
-            Path filePath = destinationFolder.resolve("extent-report.html");
+            Path filePath = destinationFolder.resolve(fileName);
 
             // Save the Extent HTML report
             ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter(filePath.toFile());
@@ -68,19 +70,19 @@ public class ScreenshotUtils {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
         String timestamp = now.format(formatter);
 
-        Path destinationFolder = new File(folderPath, timestamp).toPath();
+        Path destinationFolder = new File(folderPath, "ABC_" + timestamp).toPath();
         if (!Files.exists(destinationFolder)) {
             Files.createDirectories(destinationFolder);
         }
         return destinationFolder;
     }
-
-    private static String generateFileName(String screenshotName) {
+    private static String generateFileName(String name) {
         // Generate a unique file name based on current date and time
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
         String timestamp = now.format(formatter);
         String extension = ".png";
-        return screenshotName + "_" + timestamp + extension;
+        return name + "_" + timestamp + extension;
     }
 }
+
