@@ -49,7 +49,7 @@ public class ScreenshotUtils {
             String fileName = generateFileName("extent-html");
 
             // Set the file path for the HTML report
-            Path filePath = destinationFolder.resolve(fileName);
+            Path filePath = destinationFolder.resolve("Report").resolve(fileName);
 
             // Save the Extent HTML report
             ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter(filePath.toFile());
@@ -76,13 +76,13 @@ public class ScreenshotUtils {
         }
         return destinationFolder;
     }
+
     private static String generateFileName(String name) {
         // Generate a unique file name based on current date and time
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
         String timestamp = now.format(formatter);
-        String extension = ".png";
+        String extension = ".html";
         return name + "_" + timestamp + extension;
     }
 }
-
