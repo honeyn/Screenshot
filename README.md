@@ -73,6 +73,8 @@ public class ScreenshotUtils {
         Path destinationFolder = new File(folderPath, "ABC_" + timestamp).toPath();
         if (!Files.exists(destinationFolder)) {
             Files.createDirectories(destinationFolder);
+            Files.createDirectories(destinationFolder.resolve("Screenshots"));
+            Files.createDirectories(destinationFolder.resolve("Report"));
         }
         return destinationFolder;
     }
