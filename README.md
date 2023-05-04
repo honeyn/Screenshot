@@ -62,3 +62,77 @@ Check that the API handles rate limiting or throttling correctly by sending a hi
 Test the API with GET requests that contain malformed or invalid headers and verify that it rejects them with appropriate error responses (e.g., 400 Bad Request).
 Verify that the API returns proper error responses (e.g., 500 Internal Server Error) for server-side issues, such as database connectivity problems or internal server errors.
 
+import requests
+
+# Positive Test Cases
+# 1. Send a GET request to retrieve a specific resource and verify the response
+response = requests.get("https://api.example.com/resource/1")
+assert response.status_code == 200
+# Add assertions to validate the response data as per your specific requirements
+
+# 2. Test the API with valid query parameters and verify the filtered/sorted results
+params = {
+    "filter": "category",
+    "sort": "name"
+}
+response = requests.get("https://api.example.com/resources", params=params)
+assert response.status_code == 200
+# Add assertions to validate the filtered/sorted results as per your specific requirements
+
+# 3. Verify that the API supports pagination correctly
+page = 1
+while True:
+    response = requests.get(f"https://api.example.com/resources?page={page}")
+    assert response.status_code == 200
+    # Add assertions to validate the paginated results as per your specific requirements
+    data = response.json()
+    if not data["next_page"]:
+        break
+    page += 1
+
+# 4. Test the API with a large resource and verify the response efficiency
+response = requests.get("https://api.example.com/large_resource")
+assert response.status_code == 200
+# Add assertions to validate the response data and performance as per your specific requirements
+
+# Negative Test Cases
+# 1. Send a GET request for a non-existent resource and verify the response
+response = requests.get("https://api.example.com/invalid_resource")
+assert response.status_code == 404
+# Add assertions to validate the error message as per your specific requirements
+
+# 2. Test the API with invalid or missing query parameters
+params = {
+    "invalid_param": "value"
+}
+response = requests.get("https://api.example.com/resources", params=params)
+assert response.status_code == 400
+# Add assertions to validate the error message as per your specific requirements
+
+# 3. Verify that the API rejects unauthorized GET requests
+response = requests.get("https://api.example.com/resources", headers={"Authorization": "invalid_token"})
+assert response.status_code == 401
+# Add assertions to validate the error message as per your specific requirements
+
+# 4. Test the API with a request that exceeds the maximum URL length
+response = requests.get("https://api.example.com/" + "a" * 2048)
+assert response.status_code == 414
+
+# 5. Check that the API handles rate limiting or throttling correctly
+for _ in range(100):
+    response = requests.get("https://api.example.com/resources")
+    if response.status_code != 200:
+        break
+assert response.status_code == 429
+# Add assertions to validate the error message as per your specific requirements
+
+# 6. Test the API with GET requests containing malformed headers
+response = requests.get("https://api.example.com/resources", headers={"Invalid-Header": "value"})
+assert response.status_code == 400
+# Add assertions to validate the error message as per your specific requirements
+
+# 7. Verify that the API returns proper error responses for server-side issues
+response = requests.get("https://api.example.com/unavailable_resource")
+assert response.status_code == 500
+# Add assertions to validate the error message as per your specific requirements
+
